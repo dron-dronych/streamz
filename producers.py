@@ -31,7 +31,7 @@ class StreamProducer:
         if self.type == 'kinesis':
             return KinesisProducer
         elif self.type == 'kafka':
-            raise NotImplementedError('{} streams are not yet supported!'.format(self.type))
+            return KafkaProducerWrapper
         else:
             raise ValueError('! unknown stream type: {}'.format(self.type))
 
@@ -82,15 +82,16 @@ class KinesisStreamHealthCheck:
 
 
 class KafkaProducerWrapper:
-    # TODO implement
     """
     Kafka stream producer
     """
-    def __init__(self, kafka_con, topic_name, ):
-        pass
+    def __init__(self, hosts):
+        self.producer = KafkaProducer(bootsrap_servers=hosts,
+                                      value_serializer=lambda x: json.dumps(x).encode('utf-8'))
 
-    def put_record(self):
-        pass
+    def put_record(self, topic, msg):
+        self.producer.send(topic, msg)
 
-    def put_records(self):
-        pass
+    def put_records(self, topic, msgs):
+        for msg in msgs:
+            self.put_record(topic, msg)
