@@ -13,8 +13,12 @@ class StreamProducer:
     ['kinesis', 'kafka']
     default stream_type is 'kinesis'
     """
-    def __init__(self, conn, stream_name, part_key, stream_platform='kinesis'):
+    def __init__(self, conn, stream_name, part_key, stream_platform='kinesis', hosts=None):
         self.type = stream_platform
+
+        if conn and hosts:
+            raise ValueError('either a conn object OR hosts should be used. Not both!')
+
         self._producer = self._get_producer(stream_platform)(
             conn, stream_name, part_key)
 
@@ -27,7 +31,7 @@ class StreamProducer:
         producer = self._producer
         producer.put_record(message)
 
-    def _get_producer(self, stream_type):
+    def _get_producer(self):
         if self.type == 'kinesis':
             return KinesisProducer
         elif self.type == 'kafka':
