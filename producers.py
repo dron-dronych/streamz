@@ -4,6 +4,7 @@ from boto.kinesis.exceptions import ResourceNotFoundException
 import os
 from configparser import ConfigParser
 from kafka import KafkaProducer
+import json
 
 
 class StreamProducer:
@@ -14,10 +15,20 @@ class StreamProducer:
     default stream_type is 'kinesis'
     """
     def __init__(self, conn, stream_name, part_key, stream_platform='kinesis', hosts=None):
+        """
+        :param conn: for kinesis
+        :param stream_name:
+        :param part_key:
+        :param stream_platform:
+        :param hosts: for kafka
+        """
         self.type = stream_platform
 
         if conn and hosts:
             raise ValueError('either a conn object OR hosts should be used. Not both!')
+
+        config = ConnectionConfig(stream_platform)
+        platform_attrs = config.get()
 
         self._producer = self._get_producer(stream_platform)(
             conn, stream_name, part_key)
@@ -99,3 +110,25 @@ class KafkaProducerWrapper:
     def put_records(self, topic, msgs):
         for msg in msgs:
             self.put_record(topic, msg)
+
+
+class ConnectionConfig:
+    def __init__(self, platform):
+        self.platform = platform
+
+    def get(self):
+        if self.platform == 'kinesis':
+            return 'conn'
+        elif self.platform == 'kafka':
+            return 'hosts'
+        else:
+            raise ValueError('platform {} not supported!'.format(
+                self.platform
+            ))
+
+
+class ConnectParameterValidation:
+    @classmethod
+    def validate(cls, platform):
+        # TODO implement
+        pass
