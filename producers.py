@@ -32,8 +32,15 @@ class StreamProducer:
         config = ConnectionConfig(stream_platform)
         platform_attrs = config.get()
 
-        self._producer = self._get_producer(stream_platform)(
-            conn, stream_name, part_key)
+        # can we make this resolution elsewhere?
+        if stream_platform == 'kinesis':
+            conn_args = conn, stream_name, part_key
+        elif stream_platform == 'kinesis':
+            conn_args = (hosts,)
+        else:
+            raise ValueError('unknown platform!')
+
+        self._producer = self._get_producer()(*conn_args)
 
     def put_records(self, messages):
         producer = self._producer
