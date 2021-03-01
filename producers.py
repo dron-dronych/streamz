@@ -22,6 +22,8 @@ class StreamProducer:
         :param stream_platform:
         :param hosts: for kafka
         """
+        ConnectParameterValidation.validate(stream_platform, conn, hosts)
+
         self.type = stream_platform
 
         if conn and hosts:
