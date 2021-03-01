@@ -23,16 +23,13 @@ class StreamProducer:
         :param hosts: for kafka
         """
         ConnectParameterValidation.validate(stream_platform, conn, hosts)
-
         self.type = stream_platform
 
         if conn and hosts:
             raise ValueError('either a conn object OR hosts should be used. Not both!')
 
-        config = ConnectionConfig(stream_platform)
-        platform_attrs = config.get()
-
         # can we make this resolution elsewhere?
+        # take out to separate method?
         if stream_platform == 'kinesis':
             conn_args = conn, stream_name, part_key
         elif stream_platform == 'kinesis':
