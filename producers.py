@@ -69,16 +69,15 @@ class KinesisProducer:
 
     def __init__(self, kinesis_con, stream_name, part_key):
         self.stream_name = stream_name
-        self.part_key = part_key
         self.kinesis_con = kinesis_con
 
-    def put_record(self, msg):
+    def put_record(self, msg, part_key):
 
-        self.kinesis_con.put_record(self.stream_name, msg, self.part_key)
+        self.kinesis_con.put_record(self.stream_name, msg, part_key)
 
-    def put_records(self, msgs):
+    def put_records(self, msgs, part_key):
         for m in msgs:
-            self.put_record(m)
+            self.put_record(m, part_key)
 
 
 class KinesisStreamHealthCheck:
