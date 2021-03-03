@@ -106,7 +106,7 @@ class KafkaProducerWrapper:
     Kafka stream producer
     """
     def __init__(self, hosts):
-        self.producer = KafkaProducer(bootsrap_servers=hosts,
+        self.producer = KafkaProducer(bootstrap_servers=hosts,
                                       value_serializer=lambda x: json.dumps(x).encode('utf-8'))
 
     def put_record(self, topic, msg):
