@@ -14,7 +14,7 @@ class StreamProducer:
     ['kinesis', 'kafka']
     default stream_type is 'kinesis'
     """
-    def __init__(self, conn, stream_name, part_key, stream_platform='kinesis', hosts=None):
+    def __init__(self, conn, stream_name, stream_platform='kinesis', hosts=None):
         """
         :param conn: for kinesis
         :param stream_name:
@@ -25,26 +25,32 @@ class StreamProducer:
         ConnectParameterValidation.validate(stream_platform, conn, hosts)
         self.type = stream_platform
 
-        if conn and hosts:
-            raise ValueError('either a conn object OR hosts should be used. Not both!')
+        # if conn and hosts:
+        #     raise ValueError('either a conn object OR hosts should be used. Not both!')
 
         # can we make this resolution elsewhere?
         # take out to separate method?
         if stream_platform == 'kinesis':
-            conn_args = conn, stream_name, part_key
-        elif stream_platform == 'kinesis':
-            conn_args = (hosts,)
+            conn_args = conn, stream_name
+        elif stream_platform == 'kafka':
+            conn_args = (hosts, stream_name)
         else:
             raise ValueError('unknown platform!')
 
         self._producer = self._get_producer()(*conn_args)
 
-    def put_records(self, messages):
+    def put_records(self, messages, part_key=None):
         producer = self._producer
-        producer.put_records(messages)
+        if self.type == 'kinesis':
+            assert part_key is not None, "For kinesis app the part_key arg should not be None"
+
+        producer.put_records(messages, part_key)
         print('DONE!')
 
-    def put_record(self, message):
+    def put_record(self, message, part_key=None):
+        if self.type == 'kinesis':
+            assert part_key is not None, "For kinesis app the part_key arg should not be None"
+
         producer = self._producer
         producer.put_record(message)
 
@@ -55,10 +61,6 @@ class StreamProducer:
             return KafkaProducerWrapper
         else:
             raise ValueError('! unknown stream type: {}'.format(self.type))
-
-    def get_conn(self):
-        # TODO implement
-        pass
 
 
 class KinesisProducer:
