@@ -74,7 +74,6 @@ class KinesisProducer:
         self.kinesis_con = kinesis_con
 
     def put_record(self, msg, part_key):
-
         self.kinesis_con.put_record(self.stream_name, msg, part_key)
 
     def put_records(self, msgs, part_key):
@@ -107,16 +106,18 @@ class KafkaProducerWrapper:
     """
     Kafka stream producer
     """
-    def __init__(self, hosts):
+    def __init__(self, hosts, topic_name):
         self.producer = KafkaProducer(bootstrap_servers=hosts,
                                       value_serializer=lambda x: json.dumps(x).encode('utf-8'))
+        self.topic_name = topic_name
 
-    def put_record(self, msg, topic):
-        self.producer.send(topic, msg)
+    def put_record(self, msg, part_key=None):
+        self.producer.send(self.topic_name, msg, partition=part_key)
 
-    def put_records(self, msgs, topic):
+    def put_records(self, msgs, part_key=None):
         for msg in msgs:
-            self.put_record(msg, topic)
+            self.put_record(msg, part_key=part_key)
+        self.producer.flush()
 
 
 class ConnectionConfig:
