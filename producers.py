@@ -67,7 +67,7 @@ class KinesisProducer:
     messages into an AWS Kinesis Stream
     """
 
-    def __init__(self, kinesis_con, stream_name, part_key):
+    def __init__(self, kinesis_con, stream_name):
         self.stream_name = stream_name
         self.kinesis_con = kinesis_con
 
@@ -109,12 +109,12 @@ class KafkaProducerWrapper:
         self.producer = KafkaProducer(bootstrap_servers=hosts,
                                       value_serializer=lambda x: json.dumps(x).encode('utf-8'))
 
-    def put_record(self, topic, msg):
+    def put_record(self, msg, topic):
         self.producer.send(topic, msg)
 
-    def put_records(self, topic, msgs):
+    def put_records(self, msgs, topic):
         for msg in msgs:
-            self.put_record(topic, msg)
+            self.put_record(msg, topic)
 
 
 class ConnectionConfig:
