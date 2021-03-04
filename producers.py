@@ -135,8 +135,12 @@ class ConnectionConfig:
 class ConnectParameterValidation:
     @staticmethod
     def validate(platform, conn, hosts):
-        if not ('kinesis' in platform or 'kafka' in platform):
-            raise ValueError('unknown platform!')
+        _allowed_platforms = ('kinesis', 'kafka')
+
+        if platform not in _allowed_platforms:
+            raise ValueError("unknown platform '{}'! supported: {}".format(
+                platform,
+                _allowed_platforms))
 
         if platform == 'kinesis' and not conn:
             raise ValueError('conn argument must be specified for a {} app'.format(
