@@ -5,7 +5,7 @@ Streamz allows you to connect to streaming platforms such as Apache Kafka withou
 
 **Important.** This is still a very early version and the API may change from time to time. Please use with consideration of this fact.
 
-##Usage
+## Usage
 
 ```python3
 messages = [
