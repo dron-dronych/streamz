@@ -14,13 +14,13 @@ class StreamProducer:
     ['kinesis', 'kafka']
     default stream_type is 'kinesis'
     """
-    def __init__(self, conn, stream_name, stream_platform='kinesis', hosts=None):
+    def __init__(self, stream_name, stream_platform='kinesis', hosts=None, conn=None):
         """
-        :param conn: for kinesis
         :param stream_name:
         :param part_key:
         :param stream_platform:
         :param hosts: for kafka
+        :param conn: for kinesis
         """
         ConnectParameterValidation.validate(stream_platform, conn, hosts)
         self.type = stream_platform
@@ -33,7 +33,7 @@ class StreamProducer:
         if stream_platform == 'kinesis':
             conn_args = conn, stream_name
         elif stream_platform == 'kafka':
-            conn_args = (hosts, stream_name)
+            conn_args = hosts, stream_name
         else:
             raise ValueError('unknown platform!')
 
