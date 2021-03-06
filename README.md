@@ -14,8 +14,7 @@ messages = [
     ]
 
 kafka_topic = 'my_topic'
-# ignore the kinesis object - it's marked for removal
-producer = StreamProducer(kinesis, kafka_topic, stream_platform='kafka',
+producer = StreamProducer(stream_platform='kafka',
                         hosts=['localhost:9092'])
 producer.put_records(messages)
 
