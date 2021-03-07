@@ -8,6 +8,8 @@ Streamz allows you to connect to streaming platforms such as Apache Kafka withou
 ## Usage
 
 ```python3
+from streamz.producers import StreamProducer
+
 messages = [
         'message 1',
         'message 2'
