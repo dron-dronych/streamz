@@ -28,7 +28,7 @@ aws_secret_key = ''
 kinesis_region_name = 'my_region'
 kinesis_region_host = 'https://region.host'
 
-kinesis_region = RegionInfo(name=region_name, endpoint=region_host)
+kinesis_region = RegionInfo(name=kinesis_region_name, endpoint=kinesis_region_host)
 kinesis = boto.connect_kinesis(aws_access_key,
                                aws_secret_key,
                                region=kinesis_region)
